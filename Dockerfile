@@ -1,0 +1,14 @@
+FROM richarvey/nginx-php-fpm:latest
+
+ENV SERVER_ROOT /var/www/html
+ENV WP_VERSION 4.9.3
+
+RUN set -x; \
+		curl -o wordpress.tar.gz https://wordpress.org/wordpress-"$WP_VERSION".tar.gz; \
+		tar -zxf wordpress.tar.gz -C "$SERVER_ROOT"; \
+		mv wordpress/* "$SERVER_ROOT";
+
+COPY wp-config.php "$SERVER_ROOT/wp-config.php"
+
+RUN rmdir wordpress; \
+		rm wordpress.tar.gz;
