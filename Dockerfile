@@ -9,6 +9,7 @@ RUN set -x; \
 		mv wordpress/* "$SERVER_ROOT";
 
 COPY wp-config.php "$SERVER_ROOT/wp-config.php"
+COPY db-access.php "$SERVER_ROOT/db-access.php"
 
 RUN rmdir wordpress; \
 		rm wordpress.tar.gz;

@@ -22,15 +22,15 @@ esac
 pushd image_setup
 if ((updated));then
 
-	if -e db-access.php;then
-		rm db-access.php
+	if -e wp-config.php;then
+		rm wp-config.php
 	fi
 
-	cp db-access-template.php db-access.php
-	sed -i s/wpuser/$1/ db-access.php
-	sed -i s/dbpass/$2/ db-access.php
+	cp wp-config-template.php wp-config.php
+	sed -i s/wpuser/$1/ wp-config.php
+	sed -i s/dbpass/$2/ wp-config.php
 else
-	cp db-access-template.php db-access.php
+	cp wp-config-template.php wp-config.php
 fi
 popd
 
@@ -39,6 +39,9 @@ database="$BASE_PATH/wordpress-data/database";
 html="$BASE_PATH/wordpress-data/html";
 
 mkdir -p $database;
+
+echo $MYSQL_USER
+echo $MYSQL_PASSWORD
 
 docker build --tag wordpress:4.9.3_nginx -f image_setup/Dockerfile image_setup/
 
