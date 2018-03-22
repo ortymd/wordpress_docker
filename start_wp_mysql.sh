@@ -1,23 +1,31 @@
 #!/bin/bash
 
-case $argc in
-	3) 
+case $# in
+	2) 
 		MYSQL_USER=$1;
 		MYSQL_PASSWORD=$2;
 		;;
-	2)
+	1)
 		MYSQL_USER=$1;
 		MYSQL_PASSWORD=wpuser;
 		;;
-	1)
+	0)
 		MYSQL_USER=wpuser;
 		MYSQL_PASSWORD=wpuser;
+		echo $#
+		echo $MYSQL_USER;
+		echo $MYSQL_PASSWORD;
 		;;
 esac
 
-mkdir -p wordpress_data/database;
-mkdir -p wordpress_data/html;
+
+BASE_PATH=$(pwd);
+database="$BASE_PATH/wordpress-data/database";
+html="$BASE_PATH/wordpress-data/html";
+
+mkdir -p $database;
+mkdir -p $html;
 
 docker run -e MYSQL_ROOT_PASSWORD=123qwe -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=wordpress_db \
-					 --volume "./wordpress_data/database:/var/lib/mysql" --name wordpressdb --detach mariadb
-docker run --name wordpress --publish 8080:80 --volume "./wordpress_data/html:/var/www/html" --link wordpressdb:mysql --detach wordpress:4.9.3_nginx
+					 --volume "$database:/var/lib/mysql" --name wordpressdb --detach mariadb
+docker run --name wordpress --publish 8080:80 --volume "$html:/var/www/html" --link wordpressdb:mysql --detach wordpress:4.9.3_nginx
