@@ -23,9 +23,8 @@ database="$BASE_PATH/wordpress-data/database";
 html="$BASE_PATH/wordpress-data/html";
 
 mkdir -p $database;
-mkdir -p $html;
 
-docker run -e MYSQL_ROOT_PASSWORD=123qwe -e MYSQL_USER=wpuser -e MYSQL_PASSWORD=wpuser -e MYSQL_DATABASE=wordpress_db \
+docker run -e MYSQL_ROOT_PASSWORD=123qwe -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=wordpress_db \
 					 --volume $database:/var/lib/mysql --name wordpressdb --detach mariadb
 
-docker run --name wordpress --publish 8080:80 --volume $html:/var/www/html --link wordpressdb:mysql --detach wordpress:4.9.3_nginx
+docker run --name wordpress --publish 8080:80 --link wordpressdb:mysql --detach wordpress:4.9.3_nginx
