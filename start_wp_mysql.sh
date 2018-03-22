@@ -1,5 +1,7 @@
 #!/bin/bash
 
+docker build --tag wordpress:4.9.3_nginx --file ./container_setup/Dockerfile
+
 case $# in
 	2) 
 		MYSQL_USER=$1;
