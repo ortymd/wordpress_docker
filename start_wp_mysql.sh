@@ -12,9 +12,6 @@ case $# in
 	0)
 		MYSQL_USER=wpuser;
 		MYSQL_PASSWORD=wpuser;
-		echo $#
-		echo $MYSQL_USER;
-		echo $MYSQL_PASSWORD;
 		;;
 esac
 
