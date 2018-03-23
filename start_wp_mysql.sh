@@ -1,6 +1,11 @@
 #!/bin/bash
 
 updated=0;
+BASE_PATH=$(pwd);
+database="$BASE_PATH/wordpress-data/database";
+html="$BASE_PATH/wordpress-data/html";
+image_setup="image_setup";
+remote_syslog_path="image_setup/remote_syslog_linux_amd64.tar.gz";
 
 case $# in
 	2) 
@@ -34,18 +39,23 @@ else
 fi
 popd
 
-BASE_PATH=$(pwd);
-database="$BASE_PATH/wordpress-data/database";
-html="$BASE_PATH/wordpress-data/html";
-
 mkdir -p $database;
 
 echo $MYSQL_USER
 echo $MYSQL_PASSWORD
 
-docker build --tag wordpress:4.9.3_nginx -f image_setup/Dockerfile image_setup/
+if [ ! -e $remote_syslog_path ];then
+	wget --output-document $remote_syslog_path \
+	https://github.com/papertrail/remote_syslog2/releases/download/v0.20/remote_syslog_linux_amd64.tar.gz;
+fi
+tar -zxf $remote_syslog_path -C image_setup
+
+docker build --tag wordpress:4.9.3_nginx -f $image_setup/Dockerfile_nginx $image_setup
 
 docker run -e MYSQL_ROOT_PASSWORD=123qwe -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=wordpress_db \
 					 --volume $database:/var/lib/mysql --name wordpressdb --detach mariadb
 
 docker run --name wordpress --publish 8080:80 --link wordpressdb:mysql --detach wordpress:4.9.3_nginx
+
+docker logs wordpress >> logs/nginx.log
+docker logs wordpressdb >> logs/mysql.log
