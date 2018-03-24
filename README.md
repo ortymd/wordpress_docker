@@ -15,3 +15,5 @@ Namely, 'wpuser' and 'dbpass'.
 
 WORDPRESS SETUP
 =================
+Once all containers are deployed access Wordpress at
+http://localhost:8080
