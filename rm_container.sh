@@ -2,7 +2,7 @@
 
 docker stop wordpress; 
 docker stop wordpressdb; 
-docker stop dd-agent; 
+docker stop datadog-agent; 
 docker rm wordpress; 
 docker rm wordpressdb; 
-docker rm dd-agent; 
+docker rm datadog-agent; 

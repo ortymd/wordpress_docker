@@ -39,20 +39,7 @@ else
 fi
 popd
 
-mkdir -p $database;
-
-echo $MYSQL_USER
-echo $MYSQL_PASSWORD
-
-if [ ! -e $remote_syslog_path ];then
-	wget --output-document $remote_syslog_path \
-	https://github.com/papertrail/remote_syslog2/releases/download/v0.20/remote_syslog_linux_amd64.tar.gz;
-fi
-tar -zxf $remote_syslog_path -C image_setup
-
 docker build --tag wordpress:4.9.3_nginx -f $image_setup/Dockerfile_nginx $image_setup
-docker build --tag mariadb:remote_syslog -f $image_setup/Dockerfile_mysql $image_setup
-echo "$BASE_PATH/logs"
 
 docker run -e MYSQL_ROOT_PASSWORD=123qwe \
 	-e MYSQL_USER=$MYSQL_USER \
