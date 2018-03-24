@@ -63,3 +63,9 @@ docker run -d --name datadog-agent \
            -v /sys/fs/cgroup/:/host/sys/fs/cgroup:ro \
            -v /opt/datadog-agent/conf.d:/conf.d:ro \
            datadog/agent:latest
+
+docker run --restart=always \
+    	--volume /var/run/docker.sock:/var/run/docker.sock \
+	--name papertrail
+	--detach gliderlabs/logspout  \
+	syslog://logs4.papertrailapp.com:44743
