@@ -1,6 +1,4 @@
 files:
-  - /var/log/nginx/error.log
-  - /var/log/nginx/access.log
   - /tmp/supervisord.log
 destination:
   host: logs4.papertrailapp.com
