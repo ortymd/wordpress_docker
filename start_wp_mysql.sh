@@ -46,7 +46,7 @@ docker run -e MYSQL_ROOT_PASSWORD=123qwe \
 	-e MYSQL_DATABASE=wordpress_db \
 	--name wordpressdb \
  	--volume $database:/var/lib/mysql \
-	--detach mariadb:remote_syslog
+	--detach mariadb:latest
 
 docker run --name wordpress \
 	--publish 8080:80 \
@@ -66,6 +66,6 @@ docker run -d --name datadog-agent \
 
 docker run --restart=always \
     	--volume /var/run/docker.sock:/var/run/docker.sock \
-	--name papertrail
+	--name papertrail \
 	--detach gliderlabs/logspout  \
 	syslog://logs4.papertrailapp.com:44743
