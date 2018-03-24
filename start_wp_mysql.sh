@@ -51,11 +51,29 @@ fi
 tar -zxf $remote_syslog_path -C image_setup
 
 docker build --tag wordpress:4.9.3_nginx -f $image_setup/Dockerfile_nginx $image_setup
+docker build --tag mariadb:remote_syslog -f $image_setup/Dockerfile_mysql $image_setup
+echo "$BASE_PATH/logs"
 
-docker run -e MYSQL_ROOT_PASSWORD=123qwe -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASSWORD=$MYSQL_PASSWORD -e MYSQL_DATABASE=wordpress_db \
-					 --volume $database:/var/lib/mysql --name wordpressdb --detach mariadb
+docker run -e MYSQL_ROOT_PASSWORD=123qwe \
+	-e MYSQL_USER=$MYSQL_USER \
+	-e MYSQL_PASSWORD=$MYSQL_PASSWORD \
+	-e MYSQL_DATABASE=wordpress_db \
+	--name wordpressdb \
+ 	--volume $database:/var/lib/mysql \
+	--detach mariadb:remote_syslog
 
-docker run --name wordpress --publish 8080:80 --link wordpressdb:mysql --detach wordpress:4.9.3_nginx
+docker run --name wordpress \
+	--publish 8080:80 \
+	--link wordpressdb:mysql \
+	--detach wordpress:4.9.3_nginx
 
-docker logs wordpress >> logs/nginx.log
-docker logs wordpressdb >> logs/mysql.log
+docker run -d --name datadog-agent \
+           -e DD_API_KEY=76574d671b0ae3ee52e21b1e2ecb630a \
+           -e DD_LOGS_ENABLED=true \
+           -e DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true \
+           -v /var/run/docker.sock:/var/run/docker.sock:ro \
+           -v /proc/:/host/proc/:ro \
+           -v /opt/datadog-agent/run:/opt/datadog-agent/run:rw \
+           -v /sys/fs/cgroup/:/host/sys/fs/cgroup:ro \
+           -v /opt/datadog-agent/conf.d:/conf.d:ro \
+           datadog/agent:latest
