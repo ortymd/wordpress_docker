@@ -26,7 +26,6 @@ esac
 
 pushd image_setup
 if ((updated));then
-
 	if -e wp-config.php;then
 		rm wp-config.php
 	fi
