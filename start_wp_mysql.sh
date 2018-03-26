@@ -53,19 +53,9 @@ docker run --name wordpress \
 	--link wordpressdb:mysql \
 	--detach wordpress:4.9.3_nginx
 
-docker run -d --name datadog-agent \
-           -e DD_API_KEY=76574d671b0ae3ee52e21b1e2ecb630a \
-           -e DD_LOGS_ENABLED=true \
-           -e DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true \
-           -v /var/run/docker.sock:/var/run/docker.sock:ro \
-           -v /proc/:/host/proc/:ro \
-           -v /opt/datadog-agent/run:/opt/datadog-agent/run:rw \
-           -v /sys/fs/cgroup/:/host/sys/fs/cgroup:ro \
-           -v /opt/datadog-agent/conf.d:/conf.d:ro \
-           datadog/agent:latest
-
 docker run --restart=always \
-    	--volume /var/run/docker.sock:/var/run/docker.sock \
+	-e LOGSPOUT=ignore \
+	--volume /var/run/docker.sock:/var/run/docker.sock \
 	--name papertrail \
-	--detach gliderlabs/logspout  \
+	--detach gliderlabs/logspout:master  \
 	syslog://logs4.papertrailapp.com:44743
